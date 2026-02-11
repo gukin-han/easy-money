@@ -1,42 +1,37 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
 ## Project Overview
-
-Spring Boot 4.0.2 web application using Java 21 and Gradle (Kotlin DSL). Uses Spring Data JPA with an H2 in-memory database, Spring Web MVC, and Lombok.
+Spring Boot 4.0.2 / Java 21 / Gradle (Kotlin DSL)
+Spring Data JPA + H2 in-memory + Spring Web MVC + Lombok
 
 ## Build Commands
-
 ```bash
-./gradlew build          # Full build with tests
-./gradlew bootRun        # Run the application (default port 8080)
-./gradlew test           # Run all tests
-./gradlew clean build    # Clean rebuild
-```
-
-To run a single test class:
-```bash
-./gradlew test --tests "com.easymoney.EasymoneyApplicationTests"
+./gradlew build          # 빌드 + 테스트
+./gradlew bootRun        # 실행 (port 8080)
+./gradlew test           # 테스트만
+./gradlew clean build    # 클린 빌드
+./gradlew test --tests "com.easymoney.SomeTest"  # 단일 테스트
 ```
 
 ## Architecture
+- 패키지 루트: `com.easymoney`
+- 진입점: `EasymoneyApplication.java`
+- 설정: `src/main/resources/application.properties`
+- DB: H2 in-memory (콘솔: `/h2-console`)
+- 테스트: JUnit 5 + `@SpringBootTest`
 
-- **Package root:** `com.easymoney`
-- **Entry point:** `EasymoneyApplication.java` — standard `@SpringBootApplication`
-- **Config:** `src/main/resources/application.properties`
-- **Database:** H2 in-memory (with web console available)
-- **Testing:** JUnit 5 with `@SpringBootTest` for integration tests
+## Documentation
+- `docs/rules/` — 컨벤션, 규칙
+- `docs/specs/` — 도메인 스펙
+- `docs/adr/` — 기술 결정 기록
 
-## Documentation Structure
-
-- `docs/rules/` — 코드 컨벤션, 지켜야 할 규칙, 하지 말아야 할 규칙
-- `docs/specs/` — 도메인 단위 스펙 문서
-- `docs/adr/` — Architecture Decision Records (기술적 결정사항의 컨텍스트 기록)
+### 문서 최신화 규칙
+- 기술 결정이 포함된 대화 → `docs/adr/`에 반영
+- 컨벤션/규칙 관련 대화 → `docs/rules/`에 반영
+- 도메인 구조 변경 대화 → `docs/specs/`에 반영
 
 ## Key Dependencies
-
-- **Spring Boot 4.0.2** with spring-boot-starter-web and spring-boot-starter-data-jpa
-- **H2 Database** (runtime, in-memory)
-- **Lombok** (compile-only, annotation processing)
-- **Gradle 8.14.3** via wrapper
+- Spring Boot 4.0.2 (web, data-jpa)
+- H2 Database (runtime)
+- Lombok (compile-only)
+- Gradle 8.14.3
