@@ -7,4 +7,6 @@ import java.util.List;
 public interface DartClient {
 
     List<Disclosure> fetchRecentDisclosures();
+
+    String fetchDocumentContent(String receiptNumber);
 }

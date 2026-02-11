@@ -1,0 +1,47 @@
+package com.easymoney.analysis.interfaces.event;
+
+import com.easymoney.analysis.application.service.AnalysisService;
+import com.easymoney.disclosure.domain.repository.DartClient;
+import com.easymoney.global.event.NewDisclosureEvent;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
+class AnalysisEventListenerTest {
+
+    @Mock
+    private DartClient dartClient;
+
+    @Mock
+    private AnalysisService analysisService;
+
+    @InjectMocks
+    private AnalysisEventListener listener;
+
+    @Test
+    void 이벤트_수신시_본문_조회_후_분석을_실행한다() {
+        NewDisclosureEvent event = new NewDisclosureEvent(1L, "20240515000001", "삼성전자", "사업보고서");
+        given(dartClient.fetchDocumentContent("20240515000001")).willReturn("공시 본문 텍스트");
+
+        listener.handle(event);
+
+        verify(dartClient).fetchDocumentContent("20240515000001");
+        verify(analysisService).analyze(1L, "20240515000001", "삼성전자", "사업보고서", "공시 본문 텍스트");
+    }
+
+    @Test
+    void 본문_조회_실패시_빈_문자열로_분석을_실행한다() {
+        NewDisclosureEvent event = new NewDisclosureEvent(1L, "001", "테스트회사", "테스트공시");
+        given(dartClient.fetchDocumentContent("001")).willReturn("");
+
+        listener.handle(event);
+
+        verify(analysisService).analyze(1L, "001", "테스트회사", "테스트공시", "");
+    }
+}

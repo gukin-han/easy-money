@@ -3,11 +3,13 @@ package com.easymoney.disclosure.interfaces.web;
 import com.easymoney.disclosure.application.dto.DisclosureInfo;
 import com.easymoney.disclosure.application.service.DisclosureCollectionService;
 import com.easymoney.disclosure.application.service.DisclosureService;
+import com.easymoney.global.error.DartApiException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -52,5 +54,27 @@ class DisclosureControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].receiptNumber").value("001"))
                 .andExpect(jsonPath("$[0].corporateName").value("테스트회사"));
+    }
+
+    @Test
+    void collect_DartApiException이면_502를_반환한다() throws Exception {
+        given(disclosureCollectionService.collect())
+                .willThrow(new DartApiException("011", "사용량이 초과되었습니다."));
+
+        mockMvc.perform(post("/api/disclosures/collect"))
+                .andExpect(status().isBadGateway())
+                .andExpect(jsonPath("$.code").value("DART_API_ERROR"))
+                .andExpect(jsonPath("$.message").value("사용량이 초과되었습니다. (status: 011)"));
+    }
+
+    @Test
+    void collect_RestClientException이면_502를_반환한다() throws Exception {
+        given(disclosureCollectionService.collect())
+                .willThrow(new RestClientException("Connection refused"));
+
+        mockMvc.perform(post("/api/disclosures/collect"))
+                .andExpect(status().isBadGateway())
+                .andExpect(jsonPath("$.code").value("EXTERNAL_API_ERROR"))
+                .andExpect(jsonPath("$.message").value("외부 API 통신 실패: Connection refused"));
     }
 }
