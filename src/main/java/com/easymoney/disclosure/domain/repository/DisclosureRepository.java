@@ -1,6 +1,7 @@
 package com.easymoney.disclosure.domain.repository;
 
 import com.easymoney.disclosure.domain.model.Disclosure;
+import com.easymoney.disclosure.domain.model.DisclosureStatus;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,4 +17,6 @@ public interface DisclosureRepository {
     List<Disclosure> findAll();
 
     Set<String> findExistingReceiptNumbers(Collection<String> receiptNumbers);
+
+    void updateStatus(Long id, DisclosureStatus status);
 }

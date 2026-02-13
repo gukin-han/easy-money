@@ -1,7 +1,9 @@
 package com.easymoney.analysis.interfaces.event;
 
 import com.easymoney.analysis.application.service.AnalysisService;
+import com.easymoney.disclosure.domain.model.DisclosureStatus;
 import com.easymoney.disclosure.domain.repository.DartClient;
+import com.easymoney.disclosure.domain.repository.DisclosureRepository;
 import com.easymoney.global.event.NewDisclosureEvent;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,9 @@ class AnalysisEventListenerTest {
     @Mock
     private AnalysisService analysisService;
 
+    @Mock
+    private DisclosureRepository disclosureRepository;
+
     @InjectMocks
     private AnalysisEventListener listener;
 
@@ -36,6 +41,16 @@ class AnalysisEventListenerTest {
     }
 
     @Test
+    void 분석_완료_후_상태를_ANALYZED로_업데이트한다() {
+        NewDisclosureEvent event = new NewDisclosureEvent(1L, "20240515000001", "삼성전자", "사업보고서");
+        given(dartClient.fetchDocumentContent("20240515000001")).willReturn("공시 본문 텍스트");
+
+        listener.handle(event);
+
+        verify(disclosureRepository).updateStatus(1L, DisclosureStatus.ANALYZED);
+    }
+
+    @Test
     void 본문_조회_실패시_빈_문자열로_분석을_실행한다() {
         NewDisclosureEvent event = new NewDisclosureEvent(1L, "001", "테스트회사", "테스트공시");
         given(dartClient.fetchDocumentContent("001")).willReturn("");
@@ -43,5 +58,6 @@ class AnalysisEventListenerTest {
         listener.handle(event);
 
         verify(analysisService).analyze(1L, "001", "테스트회사", "테스트공시", "");
+        verify(disclosureRepository).updateStatus(1L, DisclosureStatus.ANALYZED);
     }
 }

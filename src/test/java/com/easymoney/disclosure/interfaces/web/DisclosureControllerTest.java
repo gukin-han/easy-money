@@ -3,6 +3,8 @@ package com.easymoney.disclosure.interfaces.web;
 import com.easymoney.disclosure.application.dto.DisclosureInfo;
 import com.easymoney.disclosure.application.service.DisclosureCollectionService;
 import com.easymoney.disclosure.application.service.DisclosureService;
+import com.easymoney.disclosure.domain.model.DisclosureCategory;
+import com.easymoney.disclosure.domain.model.DisclosureStatus;
 import com.easymoney.global.error.DartApiException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +48,8 @@ class DisclosureControllerTest {
         List<DisclosureInfo> infos = List.of(
                 new DisclosureInfo(1L, "001", "테스트회사", "005930", "사업보고서",
                         LocalDateTime.of(2024, 5, 15, 0, 0),
-                        "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=001")
+                        "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=001",
+                        DisclosureStatus.PENDING_ANALYSIS, DisclosureCategory.REGULAR_REPORT)
         );
         given(disclosureService.findAll()).willReturn(infos);
 

@@ -1,6 +1,8 @@
 package com.easymoney.disclosure.application.dto;
 
 import com.easymoney.disclosure.domain.model.Disclosure;
+import com.easymoney.disclosure.domain.model.DisclosureCategory;
+import com.easymoney.disclosure.domain.model.DisclosureStatus;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +13,9 @@ public record DisclosureInfo(
         String stockCode,
         String title,
         LocalDateTime disclosedAt,
-        String documentUrl
+        String documentUrl,
+        DisclosureStatus status,
+        DisclosureCategory category
 ) {
 
     public static DisclosureInfo from(Disclosure disclosure) {
@@ -22,7 +26,9 @@ public record DisclosureInfo(
                 disclosure.getStockCode(),
                 disclosure.getTitle(),
                 disclosure.getDisclosedAt(),
-                disclosure.getDocumentUrl()
+                disclosure.getDocumentUrl(),
+                disclosure.getStatus(),
+                disclosure.getCategory()
         );
     }
 }

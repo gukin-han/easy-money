@@ -2,6 +2,8 @@ package com.easymoney.disclosure.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -39,6 +41,13 @@ public class Disclosure {
 
     private String documentUrl;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DisclosureStatus status = DisclosureStatus.NEW;
+
+    @Enumerated(EnumType.STRING)
+    private DisclosureCategory category;
+
     @Builder
     public Disclosure(String receiptNumber, String corporateName, String stockCode,
                       String title, LocalDateTime disclosedAt, String documentUrl) {
@@ -48,5 +57,16 @@ public class Disclosure {
         this.title = title;
         this.disclosedAt = disclosedAt;
         this.documentUrl = documentUrl;
+    }
+
+    public void applyCategory(DisclosureCategory category) {
+        this.category = category;
+        this.status = category.isAnalyzable()
+                ? DisclosureStatus.PENDING_ANALYSIS
+                : DisclosureStatus.IGNORED;
+    }
+
+    public void markAnalyzed() {
+        this.status = DisclosureStatus.ANALYZED;
     }
 }

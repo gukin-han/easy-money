@@ -1,6 +1,7 @@
 package com.easymoney.disclosure.infrastructure.persistence;
 
 import com.easymoney.disclosure.domain.model.Disclosure;
+import com.easymoney.disclosure.domain.model.DisclosureStatus;
 import com.easymoney.disclosure.domain.repository.DisclosureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -34,5 +35,13 @@ public class DisclosureRepositoryImpl implements DisclosureRepository {
     @Override
     public Set<String> findExistingReceiptNumbers(Collection<String> receiptNumbers) {
         return jpaDisclosureRepository.findReceiptNumbersByReceiptNumberIn(receiptNumbers);
+    }
+
+    @Override
+    public void updateStatus(Long id, DisclosureStatus status) {
+        jpaDisclosureRepository.findById(id).ifPresent(disclosure -> {
+            disclosure.markAnalyzed();
+            jpaDisclosureRepository.save(disclosure);
+        });
     }
 }

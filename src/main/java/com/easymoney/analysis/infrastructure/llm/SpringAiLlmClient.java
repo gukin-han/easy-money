@@ -4,9 +4,13 @@ import com.easymoney.analysis.domain.model.AnalysisResult;
 import com.easymoney.analysis.domain.repository.LlmClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 @Component
+@Primary
+@ConditionalOnProperty(name = "spring.ai.openai.api-key")
 @RequiredArgsConstructor
 public class SpringAiLlmClient implements LlmClient {
 
