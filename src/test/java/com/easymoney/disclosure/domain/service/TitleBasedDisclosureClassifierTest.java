@@ -1,4 +1,4 @@
-package com.easymoney.disclosure.infrastructure.classifier;
+package com.easymoney.disclosure.domain.service;
 
 import com.easymoney.disclosure.domain.model.DisclosureCategory;
 import org.junit.jupiter.api.Test;
@@ -80,6 +80,19 @@ class TitleBasedDisclosureClassifierTest {
                 .isEqualTo(DisclosureCategory.UNFAITHFUL_DISCLOSURE);
     }
 
+    @Test
+    void 기타시장안내_공시는_MARKET_NOTICE로_분류한다() {
+        assertThat(classifier.classify("기타시장안내              (관리종목 지정사유 추가 우려 관련 안내)"))
+                .isEqualTo(DisclosureCategory.MARKET_NOTICE);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"[발행조건확정]증권신고서(채무증권)", "증권신고서(채무증권)"})
+    void 증권신고서_발행관련_공시는_SECURITIES_FILING으로_분류한다(String title) {
+        assertThat(classifier.classify(title))
+                .isEqualTo(DisclosureCategory.SECURITIES_FILING);
+    }
+
     // === ANALYZABLE ===
 
     @ParameterizedTest
@@ -96,7 +109,7 @@ class TitleBasedDisclosureClassifierTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"임원ㆍ주요주주특정증권등소유상황보고서", "주식등의대량보유상황보고서", "지분변동보고"})
+    @ValueSource(strings = {"임원ㆍ주요주주특정증권등소유상황보고서", "주식등의대량보유상황보고서", "지분변동보고", "최대주주등의주식보유변동"})
     void 지분변동_키워드시_OWNERSHIP_CHANGE로_분류한다(String title) {
         assertThat(classifier.classify(title))
                 .isEqualTo(DisclosureCategory.OWNERSHIP_CHANGE);
@@ -202,6 +215,8 @@ class TitleBasedDisclosureClassifierTest {
         assertThat(DisclosureCategory.PAYMENT_SCHEDULE.isAnalyzable()).isFalse();
         assertThat(DisclosureCategory.TRADING_HALT.isAnalyzable()).isFalse();
         assertThat(DisclosureCategory.UNFAITHFUL_DISCLOSURE.isAnalyzable()).isFalse();
+        assertThat(DisclosureCategory.MARKET_NOTICE.isAnalyzable()).isFalse();
+        assertThat(DisclosureCategory.SECURITIES_FILING.isAnalyzable()).isFalse();
     }
 
     @Test

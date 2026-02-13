@@ -22,7 +22,7 @@
 
 ### 분류 구조
 - `DisclosureClassifier` 인터페이스 (도메인 계층) → 구현체 교체 가능
-- `TitleBasedDisclosureClassifier` (infrastructure) — 제목 키워드 기반 분류
+- `TitleBasedDisclosureClassifier` (domain) — 제목 키워드 기반 분류, 순수 도메인 로직
 - 향후 API 기반, ML 기반 분류기로 교체 가능
 
 ### IGNORABLE (분석 불필요, status → IGNORED)
@@ -39,13 +39,15 @@
 | `PAYMENT_SCHEDULE` | `지급수단별` + `지급기간별` | 보험사 정기 공시 |
 | `TRADING_HALT` | `주권매매거래정지` | 거래소 조치 |
 | `UNFAITHFUL_DISCLOSURE` | `불성실공시법인지정` | 거래소 제재 |
+| `MARKET_NOTICE` | `기타시장안내` | 거래소 안내 |
+| `SECURITIES_FILING` | `발행조건확정`, `증권신고서`(정정 제외) | 증권 발행 절차 |
 
 ### ANALYZABLE (분석 대상, status → PENDING_ANALYSIS)
 | 카테고리 | 패턴 | 이유 |
 |---|---|---|
 | `REGULAR_REPORT` | `사업보고서`, `분기보고서`, `반기보고서` | 정기 보고서 |
 | `MATERIAL_EVENT` | `주요사항보고` | 주요 사항 |
-| `OWNERSHIP_CHANGE` | `지분변동`, `임원ㆍ주요주주`, `주식등의대량보유` | 지분 변동 |
+| `OWNERSHIP_CHANGE` | `지분변동`, `임원ㆍ주요주주`, `주식등의대량보유`, `최대주주` | 지분 변동 |
 | `TENDER_OFFER` | `공개매수` | 공개 매수 |
 | `FINANCIAL_CHANGE` | `매출액또는손익구조`, `파생상품거래손실` | 재무 변동 |
 | `DIVIDEND` | `현금ㆍ현물배당결정`, `배당` | 배당 결정 |
@@ -72,14 +74,13 @@ DisclosureCollectionService.collect()
 disclosure/
 ├── domain/
 │   ├── model/          Disclosure, DisclosureCategory, DisclosureStatus, Corporate
-│   ├── service/        DisclosureClassifier (포트)
+│   ├── service/        DisclosureClassifier (포트), TitleBasedDisclosureClassifier
 │   └── repository/     DisclosureRepository (포트), DartClient (포트)
 ├── application/
 │   ├── service/        DisclosureService, DisclosureCollectionService
 │   └── dto/            DisclosureInfo
 ├── infrastructure/
 │   ├── persistence/    JpaDisclosureRepository, DisclosureRepositoryImpl
-│   ├── classifier/     TitleBasedDisclosureClassifier
 │   └── api/            DartApiClient, dto/
 └── interfaces/
     ├── web/            DisclosureController

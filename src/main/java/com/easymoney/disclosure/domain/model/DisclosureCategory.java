@@ -19,6 +19,8 @@ public enum DisclosureCategory {
     PAYMENT_SCHEDULE("지급수단별지급기간별", false),
     TRADING_HALT("주권매매거래정지", false),
     UNFAITHFUL_DISCLOSURE("불성실공시법인지정", false),
+    MARKET_NOTICE("거래소안내", false),
+    SECURITIES_FILING("증권신고서(발행조건확정)", false),
 
     // ANALYZABLE — 투자 판단 영향
     REGULAR_REPORT("정기보고서", true),

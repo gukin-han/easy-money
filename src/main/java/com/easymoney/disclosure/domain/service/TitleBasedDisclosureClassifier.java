@@ -1,4 +1,4 @@
-package com.easymoney.disclosure.infrastructure.classifier;
+package com.easymoney.disclosure.domain.service;
 
 import com.easymoney.disclosure.domain.model.DisclosureCategory;
 import com.easymoney.disclosure.domain.service.DisclosureClassifier;
@@ -48,6 +48,12 @@ public class TitleBasedDisclosureClassifier implements DisclosureClassifier {
         if (title.contains("불성실공시법인지정")) {
             return DisclosureCategory.UNFAITHFUL_DISCLOSURE;
         }
+        if (title.contains("기타시장안내")) {
+            return DisclosureCategory.MARKET_NOTICE;
+        }
+        if (title.contains("발행조건확정") || (title.contains("증권신고서") && !title.contains("정정"))) {
+            return DisclosureCategory.SECURITIES_FILING;
+        }
 
         // === ANALYZABLE ===
 
@@ -59,7 +65,7 @@ public class TitleBasedDisclosureClassifier implements DisclosureClassifier {
             return DisclosureCategory.MATERIAL_EVENT;
         }
         if (title.contains("지분변동") || title.contains("임원ㆍ주요주주")
-                || title.contains("주식등의대량보유")) {
+                || title.contains("주식등의대량보유") || title.contains("최대주주")) {
             return DisclosureCategory.OWNERSHIP_CHANGE;
         }
         if (title.contains("공개매수")) {
