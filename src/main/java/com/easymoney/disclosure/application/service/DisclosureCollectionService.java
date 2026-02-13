@@ -46,7 +46,9 @@ public class DisclosureCollectionService {
             if (saved.getStatus() == DisclosureStatus.PENDING_ANALYSIS) {
                 eventPublisher.publishEvent(new NewDisclosureEvent(
                         saved.getId(), saved.getReceiptNumber(),
-                        saved.getCorporateName(), saved.getTitle()
+                        saved.getCorporateName(), saved.getTitle(),
+                        saved.getStockCode(),
+                        saved.getDisclosedAt().toLocalDate()
                 ));
             }
         });

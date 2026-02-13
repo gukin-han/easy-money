@@ -2,12 +2,10 @@ package com.easymoney.global.event;
 
 import java.time.LocalDate;
 
-public record NewDisclosureEvent(
+public record AnalysisCompletedEvent(
         Long disclosureId,
-        String receiptNumber,
-        String corporateName,
-        String title,
         String stockCode,
+        String corporateName,
         LocalDate disclosureDate
 ) {
 }

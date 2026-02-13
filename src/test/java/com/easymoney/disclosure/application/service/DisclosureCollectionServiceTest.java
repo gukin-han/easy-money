@@ -83,6 +83,8 @@ class DisclosureCollectionServiceTest {
         NewDisclosureEvent event = captor.getValue();
         assertThat(event.receiptNumber()).isEqualTo("001");
         assertThat(event.corporateName()).isEqualTo("테스트회사");
+        assertThat(event.stockCode()).isEqualTo("005930");
+        assertThat(event.disclosureDate()).isEqualTo(java.time.LocalDate.of(2024, 5, 15));
     }
 
     @Test
@@ -154,6 +156,7 @@ class DisclosureCollectionServiceTest {
         return Disclosure.builder()
                 .receiptNumber(receiptNumber)
                 .corporateName("테스트회사")
+                .stockCode("005930")
                 .title(title)
                 .disclosedAt(LocalDateTime.of(2024, 5, 15, 0, 0))
                 .documentUrl("https://dart.fss.or.kr/dsaf001/main.do?rcpNo=" + receiptNumber)

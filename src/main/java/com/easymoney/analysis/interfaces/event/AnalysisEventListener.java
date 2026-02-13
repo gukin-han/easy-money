@@ -32,7 +32,9 @@ public class AnalysisEventListener {
                 event.receiptNumber(),
                 event.corporateName(),
                 event.title(),
-                content
+                content,
+                event.stockCode(),
+                event.disclosureDate()
         );
 
         disclosureRepository.updateStatus(event.disclosureId(), DisclosureStatus.ANALYZED);

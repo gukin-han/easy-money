@@ -18,6 +18,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
     }
 
+    @ExceptionHandler(KisApiException.class)
+    public ResponseEntity<ErrorResponse> handleKisApiException(KisApiException e) {
+        ErrorResponse response = new ErrorResponse(
+                "KIS_API_ERROR",
+                e.getMessage() + " (returnCode: " + e.getReturnCode() + ")"
+        );
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(response);
+    }
+
     @ExceptionHandler(RestClientException.class)
     public ResponseEntity<ErrorResponse> handleRestClientException(RestClientException e) {
         ErrorResponse response = new ErrorResponse(
