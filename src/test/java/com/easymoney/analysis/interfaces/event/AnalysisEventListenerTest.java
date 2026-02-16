@@ -41,8 +41,7 @@ class AnalysisEventListenerTest {
         listener.handle(event);
 
         verify(dartClient).fetchDocumentContent("20240515000001");
-        verify(analysisService).analyze(1L, "20240515000001", "삼성전자", "사업보고서", "공시 본문 텍스트",
-                "005930", LocalDate.of(2024, 5, 15));
+        verify(analysisService).analyze(1L, "20240515000001", "삼성전자", "사업보고서", "공시 본문 텍스트");
     }
 
     @Test
@@ -66,8 +65,7 @@ class AnalysisEventListenerTest {
 
         listener.handle(event);
 
-        verify(analysisService).analyze(1L, "001", "테스트회사", "테스트공시", "",
-                "005930", LocalDate.of(2024, 5, 15));
+        verify(analysisService).analyze(1L, "001", "테스트회사", "테스트공시", "");
         verify(disclosureRepository).updateStatus(1L, DisclosureStatus.ANALYZED);
     }
 }

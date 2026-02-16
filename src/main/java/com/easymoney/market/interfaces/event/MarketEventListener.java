@@ -1,6 +1,6 @@
 package com.easymoney.market.interfaces.event;
 
-import com.easymoney.global.event.AnalysisCompletedEvent;
+import com.easymoney.global.event.NewDisclosureEvent;
 import com.easymoney.market.application.service.MarketReactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +18,8 @@ public class MarketEventListener {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handle(AnalysisCompletedEvent event) {
-        log.info("분석 완료 이벤트 수신 — 시장 반응 추적 시작: {} ({})",
+    public void handle(NewDisclosureEvent event) {
+        log.info("새 공시 이벤트 수신 — 시장 반응 추적 시작: {} ({})",
                 event.corporateName(), event.stockCode());
 
         try {
