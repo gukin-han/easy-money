@@ -39,7 +39,7 @@ class DartApiClientTest {
     }
 
     @Test
-    void 응답을_Disclosure로_변환한다() {
+    void shouldConvertResponseToDisclosure() {
         String responseBody = """
                 {
                     "status": "000",
@@ -78,7 +78,7 @@ class DartApiClientTest {
     }
 
     @Test
-    void 빈_응답이면_빈_리스트를_반환한다() {
+    void shouldReturnEmptyListForEmptyResponse() {
         String responseBody = """
                 {
                     "status": "013",
@@ -103,7 +103,7 @@ class DartApiClientTest {
             "800, 시스템 점검 중입니다.",
             "900, 정의되지 않은 오류가 발생했습니다."
     })
-    void 에러_status이면_DartApiException을_던진다(String status, String message) {
+    void shouldThrowDartApiExceptionForErrorStatus(String status, String message) {
         String responseBody = """
                 {
                     "status": "%s",
@@ -126,7 +126,7 @@ class DartApiClientTest {
     }
 
     @Test
-    void fetchDocumentContent_ZIP에서_XML_텍스트를_추출한다() throws IOException {
+    void shouldExtractTextFromZipXml() throws IOException {
         byte[] zipBytes = createZipWithXml("<root><body>공시 본문 내용입니다</body></root>");
 
         mockServer.expect(requestTo("https://opendart.fss.or.kr/api/document.xml?crtfc_key=test-key&rcept_no=20240515000001"))
@@ -139,7 +139,7 @@ class DartApiClientTest {
     }
 
     @Test
-    void fetchDocumentContent_10000자를_초과하면_잘라낸다() throws IOException {
+    void shouldTruncateContentExceeding10000Chars() throws IOException {
         String longText = "가".repeat(15_000);
         byte[] zipBytes = createZipWithXml("<root>" + longText + "</root>");
 
@@ -153,7 +153,7 @@ class DartApiClientTest {
     }
 
     @Test
-    void fetchDocumentContent_실패시_빈_문자열을_반환한다() {
+    void shouldReturnEmptyStringWhenFetchFails() {
         mockServer.expect(requestTo("https://opendart.fss.or.kr/api/document.xml?crtfc_key=test-key&rcept_no=001"))
                 .andRespond(withSuccess(new byte[0], MediaType.APPLICATION_OCTET_STREAM));
 

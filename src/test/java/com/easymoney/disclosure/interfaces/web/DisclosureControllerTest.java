@@ -35,7 +35,7 @@ class DisclosureControllerTest {
     private DisclosureCollectionService disclosureCollectionService;
 
     @Test
-    void collect_수집_결과를_반환한다() throws Exception {
+    void shouldReturnCollectedCount() throws Exception {
         given(disclosureCollectionService.collect()).willReturn(5);
 
         mockMvc.perform(post("/api/disclosures/collect"))
@@ -44,7 +44,7 @@ class DisclosureControllerTest {
     }
 
     @Test
-    void findAll_전체_공시를_반환한다() throws Exception {
+    void shouldReturnAllDisclosures() throws Exception {
         List<DisclosureInfo> infos = List.of(
                 new DisclosureInfo(1L, "001", "테스트회사", "005930", "사업보고서",
                         LocalDateTime.of(2024, 5, 15, 0, 0),
@@ -60,7 +60,7 @@ class DisclosureControllerTest {
     }
 
     @Test
-    void collect_DartApiException이면_502를_반환한다() throws Exception {
+    void shouldReturn502ForDartApiException() throws Exception {
         given(disclosureCollectionService.collect())
                 .willThrow(new DartApiException("011", "사용량이 초과되었습니다."));
 
@@ -71,7 +71,7 @@ class DisclosureControllerTest {
     }
 
     @Test
-    void collect_RestClientException이면_502를_반환한다() throws Exception {
+    void shouldReturn502ForRestClientException() throws Exception {
         given(disclosureCollectionService.collect())
                 .willThrow(new RestClientException("Connection refused"));
 

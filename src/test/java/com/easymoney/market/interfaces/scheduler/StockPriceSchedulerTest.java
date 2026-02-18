@@ -32,7 +32,7 @@ class StockPriceSchedulerTest {
     private StockPriceScheduler scheduler;
 
     @Test
-    void 장외시간이면_수집하지_않는다() {
+    void shouldNotCollectOutsideMarketHours() {
         if (!scheduler.isMarketOpen()) {
             scheduler.collectPrices();
             verifyNoInteractions(marketReactionRepository);
@@ -41,14 +41,14 @@ class StockPriceSchedulerTest {
     }
 
     @Test
-    void isMarketOpen은_시간대에_따라_결과를_반환한다() {
+    void shouldReturnBooleanBasedOnMarketHours() {
         // isMarketOpen()이 boolean을 반환하는지 확인
         boolean result = scheduler.isMarketOpen();
         assertThat(result).isNotNull();
     }
 
     @Test
-    void 빈_종목_리스트면_주가_수집을_건너뛴다() {
+    void shouldSkipCollectionWhenStockListIsEmpty() {
         if (scheduler.isMarketOpen()) {
             given(marketReactionRepository.findAll()).willReturn(List.of());
 

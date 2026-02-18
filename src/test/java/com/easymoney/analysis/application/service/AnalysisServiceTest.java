@@ -30,7 +30,7 @@ class AnalysisServiceTest {
     private AnalysisService analysisService;
 
     @Test
-    void LLM_분석_결과를_AnalysisReport로_저장한다() {
+    void shouldSaveLlmResultAsAnalysisReport() {
         AnalysisResult result = new AnalysisResult(Sentiment.POSITIVE, 75, "호재성 공시입니다.");
         given(llmClient.analyze(anyString(), anyString(), anyString())).willReturn(result);
 
@@ -51,7 +51,7 @@ class AnalysisServiceTest {
     }
 
     @Test
-    void LLM에_기업명_제목_본문을_전달한다() {
+    void shouldPassCorpNameTitleContentToLlm() {
         AnalysisResult result = new AnalysisResult(Sentiment.NEUTRAL, 0, "중립적입니다.");
         given(llmClient.analyze(anyString(), anyString(), anyString())).willReturn(result);
 

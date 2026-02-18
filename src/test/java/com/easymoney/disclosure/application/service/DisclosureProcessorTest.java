@@ -40,7 +40,7 @@ class DisclosureProcessorTest {
     private DisclosureProcessor processor;
 
     @Test
-    void 분석_대상_공시는_저장_후_이벤트를_발행한다() {
+    void shouldSaveAndPublishEventForAnalyzableDisclosure() {
         Disclosure d1 = createDisclosure("001", "사업보고서");
 
         given(classifier.classify("사업보고서")).willReturn(DisclosureCategory.REGULAR_REPORT);
@@ -62,7 +62,7 @@ class DisclosureProcessorTest {
     }
 
     @Test
-    void IGNORED_공시는_저장하되_이벤트를_발행하지_않는다() {
+    void shouldSaveButNotPublishEventForIgnoredDisclosure() {
         Disclosure d1 = createDisclosure("001", "[기재정정]사업보고서");
 
         given(classifier.classify("[기재정정]사업보고서")).willReturn(DisclosureCategory.CORRECTION);
@@ -76,7 +76,7 @@ class DisclosureProcessorTest {
     }
 
     @Test
-    void 혼합_공시_중_분석_대상만_이벤트를_발행한다() {
+    void shouldPublishEventOnlyForAnalyzableFromMixed() {
         Disclosure analyzable = createDisclosure("001", "사업보고서");
         Disclosure ignorable = createDisclosure("002", "[기재정정]사업보고서");
 

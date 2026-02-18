@@ -20,7 +20,7 @@ class DartPollingSchedulerTest {
     private DartPollingScheduler scheduler;
 
     @Test
-    void poll_호출시_collect를_실행한다() {
+    void shouldCallCollectOnPoll() {
         given(disclosureCollectionService.collect()).willReturn(3);
 
         scheduler.poll();
@@ -29,7 +29,7 @@ class DartPollingSchedulerTest {
     }
 
     @Test
-    void collect_예외가_발생해도_전파하지_않는다() {
+    void shouldNotPropagateCollectException() {
         given(disclosureCollectionService.collect()).willThrow(new RuntimeException("API 오류"));
 
         scheduler.poll();

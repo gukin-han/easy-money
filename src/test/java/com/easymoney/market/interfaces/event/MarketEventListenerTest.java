@@ -23,7 +23,7 @@ class MarketEventListenerTest {
     private MarketEventListener listener;
 
     @Test
-    void 공시_이벤트_수신시_시장_반응을_추적한다() {
+    void shouldTrackMarketReactionOnDisclosureEvent() {
         NewDisclosureEvent event = new NewDisclosureEvent(
                 1L, "20240515000001", "삼성전자", "사업보고서",
                 "005930", LocalDate.of(2024, 5, 15));
@@ -34,7 +34,7 @@ class MarketEventListenerTest {
     }
 
     @Test
-    void 시장_반응_추적_실패시_예외를_잡아_로깅한다() {
+    void shouldCatchAndLogExceptionWhenTrackingFails() {
         NewDisclosureEvent event = new NewDisclosureEvent(
                 1L, "20240515000001", "삼성전자", "사업보고서",
                 "005930", LocalDate.of(2024, 5, 15));

@@ -27,7 +27,7 @@ class AnalysisControllerTest {
     private AnalysisService analysisService;
 
     @Test
-    void findAll_분석_결과를_반환한다() throws Exception {
+    void shouldReturnAllAnalysisReports() throws Exception {
         List<AnalysisReportInfo> reports = List.of(
                 new AnalysisReportInfo(
                         1L, 1L, "20240515000001", "삼성전자", "사업보고서",
@@ -47,7 +47,7 @@ class AnalysisControllerTest {
     }
 
     @Test
-    void findAll_빈_결과를_반환한다() throws Exception {
+    void shouldReturnEmptyList() throws Exception {
         given(analysisService.findAll()).willReturn(List.of());
 
         mockMvc.perform(get("/api/analyses"))

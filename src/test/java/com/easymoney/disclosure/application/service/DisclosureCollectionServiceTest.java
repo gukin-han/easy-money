@@ -29,7 +29,7 @@ class DisclosureCollectionServiceTest {
     private DisclosureCollectionService collectionService;
 
     @Test
-    void collect는_수집_후_처리한다() {
+    void shouldCollectThenProcess() {
         List<Disclosure> disclosures = List.of(
                 createDisclosure("001", "사업보고서"),
                 createDisclosure("002", "사업보고서")
@@ -44,7 +44,7 @@ class DisclosureCollectionServiceTest {
     }
 
     @Test
-    void 수집_결과_건수를_반환한다() {
+    void shouldReturnCollectedCount() {
         List<Disclosure> disclosures = List.of(
                 createDisclosure("001", "사업보고서"),
                 createDisclosure("002", "사업보고서"),

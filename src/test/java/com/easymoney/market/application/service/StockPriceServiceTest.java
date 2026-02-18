@@ -31,7 +31,7 @@ class StockPriceServiceTest {
     private StockPriceService stockPriceService;
 
     @Test
-    void 현재가를_조회하여_저장한다() {
+    void shouldFetchAndSaveCurrentPrice() {
         StockPrice price = createStockPrice("005930", LocalDate.now(), 70000);
         given(stockClient.fetchCurrentPrice("005930")).willReturn(Optional.of(price));
         given(stockPriceRepository.findByStockCodeAndTradingDate("005930", price.getTradingDate()))
@@ -45,7 +45,7 @@ class StockPriceServiceTest {
     }
 
     @Test
-    void 이미_저장된_주가는_중복_저장하지_않는다() {
+    void shouldNotDuplicateSaveExistingPrice() {
         StockPrice price = createStockPrice("005930", LocalDate.now(), 70000);
         StockPrice existing = createStockPrice("005930", LocalDate.now(), 70000);
         given(stockClient.fetchCurrentPrice("005930")).willReturn(Optional.of(price));
@@ -59,7 +59,7 @@ class StockPriceServiceTest {
     }
 
     @Test
-    void 조회_실패시_빈_Optional을_반환한다() {
+    void shouldReturnEmptyOptionalWhenFetchFails() {
         given(stockClient.fetchCurrentPrice("005930")).willReturn(Optional.empty());
 
         Optional<StockPrice> result = stockPriceService.fetchAndSave("005930");

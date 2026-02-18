@@ -29,7 +29,7 @@ class DisclosureCollectorTest {
     private DisclosureCollector collector;
 
     @Test
-    void 새로운_공시만_반환한다() {
+    void shouldReturnOnlyNewDisclosures() {
         Disclosure d1 = createDisclosure("001", "사업보고서");
         Disclosure d2 = createDisclosure("002", "사업보고서");
         Disclosure d3 = createDisclosure("003", "사업보고서");
@@ -44,7 +44,7 @@ class DisclosureCollectorTest {
     }
 
     @Test
-    void 모두_중복이면_빈_리스트를_반환한다() {
+    void shouldReturnEmptyListWhenAllDuplicated() {
         Disclosure d1 = createDisclosure("001", "사업보고서");
 
         given(dartClient.fetchRecentDisclosures()).willReturn(List.of(d1));
@@ -57,7 +57,7 @@ class DisclosureCollectorTest {
     }
 
     @Test
-    void 빈_목록이면_빈_리스트를_반환한다() {
+    void shouldReturnEmptyListWhenFetchReturnsEmpty() {
         given(dartClient.fetchRecentDisclosures()).willReturn(List.of());
         given(disclosureRepository.findExistingReceiptNumbers(List.of()))
                 .willReturn(Set.of());

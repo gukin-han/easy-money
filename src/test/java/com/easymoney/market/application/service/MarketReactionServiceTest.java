@@ -39,7 +39,7 @@ class MarketReactionServiceTest {
     private MarketReactionService marketReactionService;
 
     @Test
-    void 전일_대비_등락률을_계산하여_저장한다() {
+    void shouldCalculateAndSaveChangeRate() {
         LocalDate disclosureDate = LocalDate.of(2024, 5, 15);
         LocalDate priorDate = disclosureDate.minusDays(1);
         StockPrice prior = createStockPrice("005930", priorDate, 70000);
@@ -65,7 +65,7 @@ class MarketReactionServiceTest {
     }
 
     @Test
-    void DB에_없으면_API에서_조회한다() {
+    void shouldFetchFromApiWhenNotInDb() {
         LocalDate disclosureDate = LocalDate.of(2024, 5, 15);
         LocalDate priorDate = disclosureDate.minusDays(1);
         StockPrice prior = createStockPrice("005930", priorDate, 70000);
@@ -91,7 +91,7 @@ class MarketReactionServiceTest {
     }
 
     @Test
-    void 이미_추적된_반응은_건너뛴다() {
+    void shouldSkipAlreadyTrackedReaction() {
         MarketReaction existing = MarketReaction.builder()
                 .disclosureId(1L)
                 .stockCode("005930")
@@ -108,7 +108,7 @@ class MarketReactionServiceTest {
     }
 
     @Test
-    void 종목코드가_없으면_건너뛴다() {
+    void shouldSkipWhenStockCodeIsNull() {
         marketReactionService.trackReaction(1L, null, LocalDate.of(2024, 5, 15));
 
         verify(marketReactionRepository, never()).findByDisclosureId(any());
@@ -116,7 +116,7 @@ class MarketReactionServiceTest {
     }
 
     @Test
-    void 종목코드가_빈문자열이면_건너뛴다() {
+    void shouldSkipWhenStockCodeIsEmpty() {
         marketReactionService.trackReaction(1L, "", LocalDate.of(2024, 5, 15));
 
         verify(marketReactionRepository, never()).findByDisclosureId(any());
@@ -124,7 +124,7 @@ class MarketReactionServiceTest {
     }
 
     @Test
-    void 주가_데이터_부족시_저장하지_않는다() {
+    void shouldNotSaveWhenPriceDataInsufficient() {
         LocalDate disclosureDate = LocalDate.of(2024, 5, 15);
         LocalDate priorDate = disclosureDate.minusDays(1);
 
