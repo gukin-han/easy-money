@@ -26,16 +26,21 @@ public class AnalysisEventListener {
     public void handle(NewDisclosureEvent event) {
         log.info("새 공시 분석 시작: {} - {}", event.corporateName(), event.title());
 
-        String content = dartClient.fetchDocumentContent(event.receiptNumber());
-        analysisService.analyze(
-                event.disclosureId(),
-                event.receiptNumber(),
-                event.corporateName(),
-                event.title(),
-                content
-        );
+        try {
+            String content = dartClient.fetchDocumentContent(event.receiptNumber());
+            analysisService.analyze(
+                    event.disclosureId(),
+                    event.receiptNumber(),
+                    event.corporateName(),
+                    event.title(),
+                    content
+            );
 
-        disclosureRepository.updateStatus(event.disclosureId(), DisclosureStatus.ANALYZED);
-        log.info("공시 분석 완료: {} - {}", event.corporateName(), event.title());
+            disclosureRepository.updateStatus(event.disclosureId(), DisclosureStatus.ANALYZED);
+            log.info("공시 분석 완료: {} - {}", event.corporateName(), event.title());
+        } catch (Exception e) {
+            log.error("공시 분석 실패: disclosureId={}, {} - {}",
+                    event.disclosureId(), event.corporateName(), event.title(), e);
+        }
     }
 }

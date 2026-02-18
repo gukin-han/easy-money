@@ -33,6 +33,8 @@ analysis/
 
 ## 인바운드
 - `AnalysisEventListener` — `NewDisclosureEvent` 수신 → 본문 조회 + 분석 트리거
+  - `@Async` + `@TransactionalEventListener(AFTER_COMMIT)`
+  - 실패 시 예외를 catch하고 로그 기록 → 상태는 `PENDING_ANALYSIS`로 유지
 - `AnalysisController` — `GET /api/analyses` 분석 결과 조회
 
 ## 아웃바운드
