@@ -19,7 +19,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import com.easymoney.support.MySqlTestContainerConfig;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,6 +38,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest
+@Import(MySqlTestContainerConfig.class)
 class DisclosureAnalysisFlowTest {
 
     @Autowired
@@ -71,7 +75,7 @@ class DisclosureAnalysisFlowTest {
 
     @Test
     @DisplayName("분석 대상 공시 전체 플로우: 수집 → 분류 → 이벤트 → 본문 조회 → LLM 분석 → 저장")
-    void 분석_대상_공시_전체_플로우() {
+    void shouldRunFullFlowForAnalyzableDisclosure() {
         // given
         Disclosure disclosure = Disclosure.builder()
                 .receiptNumber("20240101000001")
@@ -116,7 +120,7 @@ class DisclosureAnalysisFlowTest {
 
     @Test
     @DisplayName("분석 제외 공시는 이벤트가 발행되지 않는다")
-    void 분석_제외_공시는_이벤트가_발행되지_않는다() {
+    void shouldNotPublishEventForIgnoredDisclosure() {
         // given
         Disclosure disclosure = Disclosure.builder()
                 .receiptNumber("20240101000002")
@@ -147,7 +151,7 @@ class DisclosureAnalysisFlowTest {
 
     @Test
     @DisplayName("혼합 공시 중 분석 대상만 분석된다")
-    void 혼합_공시_중_분석_대상만_분석된다() {
+    void shouldAnalyzeOnlyAnalyzableFromMixedDisclosures() {
         // given
         Disclosure analyzable = Disclosure.builder()
                 .receiptNumber("20240101000003")

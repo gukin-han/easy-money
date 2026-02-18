@@ -14,8 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+
+import com.easymoney.support.MySqlTestContainerConfig;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
@@ -25,6 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assumptions.assumeThat;
 
 @SpringBootTest
+@Import(MySqlTestContainerConfig.class)
 @ActiveProfiles("local")
 @EnabledIf("isOpenAiKeyAvailable")
 class LlmAnalysisIntegrationTest {
@@ -68,21 +72,21 @@ class LlmAnalysisIntegrationTest {
 
     @Test
     @DisplayName("삼성전자 자기주식취득결과보고서를 실제 LLM으로 분석한다")
-    void 삼성전자_자기주식취득결과보고서를_실제_LLM으로_분석한다() {
-        실제_DART_공시를_LLM으로_분석한다(
+    void shouldAnalyzeSamsungTreasuryStockReportWithLlm() {
+        analyzeRealDartDisclosureWithLlm(
                 "20250217001961", "삼성전자", "005930", "자기주식취득결과보고서"
         );
     }
 
     @Test
     @DisplayName("STX 매출액변경 공시를 실제 LLM으로 분석한다")
-    void STX_매출액변경_공시를_실제_LLM으로_분석한다() {
-        실제_DART_공시를_LLM으로_분석한다(
+    void shouldAnalyzeStxRevenueChangeDisclosureWithLlm() {
+        analyzeRealDartDisclosureWithLlm(
                 "20250217801249", "STX", "011810", "매출액또는손익구조30%(대규모법인은15%)이상변경"
         );
     }
 
-    private void 실제_DART_공시를_LLM으로_분석한다(
+    private void analyzeRealDartDisclosureWithLlm(
             String receiptNumber, String corporateName, String stockCode, String title) {
         // given — DART에서 실제 공시 본문을 가져온다
         String content = dartClient.fetchDocumentContent(receiptNumber);

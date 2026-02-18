@@ -53,9 +53,9 @@
 ## 미완료
 
 ### 운영 준비
-- [ ] H2 → PostgreSQL 전환 (서버 재시작 시 데이터 유실 방지)
+- [x] H2 → MySQL 전환 (서버 재시작 시 데이터 유실 방지, Testcontainers로 테스트)
 - [ ] API 키 시크릿 관리 (환경변수 → Secrets Manager 등)
-- [ ] Docker 컨테이너화 + docker-compose 구성
+- [x] Docker 컨테이너화 + docker-compose 구성
 - [ ] 헬스체크 엔드포인트 (`/actuator/health`)
 
 ### 안정성 개선

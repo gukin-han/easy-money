@@ -26,15 +26,17 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-h2console")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-webmvc")
     implementation("org.springframework.ai:spring-ai-starter-model-openai:2.0.0-M2")
     compileOnly("org.projectlombok:lombok")
-    runtimeOnly("com.h2database:h2")
+    runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test")
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-testcontainers")
+    testImplementation(platform("org.testcontainers:testcontainers-bom:1.20.4"))
+    testImplementation("org.testcontainers:mysql")
     testImplementation("org.awaitility:awaitility:4.2.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

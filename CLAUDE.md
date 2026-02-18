@@ -2,7 +2,7 @@
 
 ## Project Overview
 Spring Boot 4.0.2 / Java 21 / Gradle (Kotlin DSL)
-Spring Data JPA + H2 in-memory + Spring Web MVC + Lombok
+Spring Data JPA + MySQL + Spring Web MVC + Lombok
 
 ## Build Commands
 ```bash
@@ -17,7 +17,7 @@ Spring Data JPA + H2 in-memory + Spring Web MVC + Lombok
 - 패키지 루트: `com.easymoney`
 - 진입점: `EasymoneyApplication.java`
 - 설정: `src/main/resources/application.properties`
-- DB: H2 in-memory (콘솔: `/h2-console`)
+- DB: MySQL 8.0 (Docker), 테스트: Testcontainers MySQL
 - 테스트: JUnit 5 + `@SpringBootTest`
 
 ## Documentation
@@ -32,6 +32,6 @@ Spring Data JPA + H2 in-memory + Spring Web MVC + Lombok
 
 ## Key Dependencies
 - Spring Boot 4.0.2 (web, data-jpa)
-- H2 Database (runtime)
+- MySQL 8.0 (runtime) + Testcontainers (test)
 - Lombok (compile-only)
 - Gradle 8.14.3
