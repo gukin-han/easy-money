@@ -24,12 +24,14 @@
 ## 이벤트 플로우
 ```
 Disclosure 수집 → NewDisclosureEvent(+stockCode, disclosureDate)
-  → Analysis 분석 → AnalysisCompletedEvent
-    → Market 반응 추적 → MarketReaction 저장
+  → (팬아웃) MarketEventListener [@Async] → 시장 반응 추적 → MarketReaction 저장
+  → (팬아웃) AnalysisEventListener [@Async] → LLM 분석 (별도 독립 수행)
 ```
+- Analysis와 Market은 동일한 NewDisclosureEvent를 동시에 수신 (팬아웃)
+- 서로 독립적으로 동작 → 분석 실패가 시장 반응 추적에 영향 없음
 
 ## 인바운드
-- `MarketEventListener` — AnalysisCompletedEvent 수신 → 시장 반응 추적
+- `MarketEventListener` — NewDisclosureEvent 수신 → 시장 반응 추적
 - `StockPriceScheduler` — 장중(09:00~15:30 KST) 주가 수집
 - `MarketController` — GET /api/market-reactions
 

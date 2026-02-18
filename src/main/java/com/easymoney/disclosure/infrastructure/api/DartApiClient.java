@@ -48,6 +48,7 @@ public class DartApiClient implements DartClient {
         validateStatus(response);
 
         return response.list().stream()
+                .filter(item -> item.stockCode() != null && !item.stockCode().isBlank())
                 .map(this::toDisclosure)
                 .toList();
     }

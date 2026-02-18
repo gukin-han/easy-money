@@ -18,21 +18,30 @@
 | 메시지 큐 (Kafka, RabbitMQ) | 독립 보장 | 비동기 | 현재 규모에 과도한 인프라 |
 
 ### 결정
-- `@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)`
-- 이벤트: `NewDisclosureEvent(disclosureId, receiptNumber, corporateName, title)`
+- `@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)` + `@Async`
+- 이벤트: `NewDisclosureEvent(disclosureId, receiptNumber, corporateName, title, stockCode, disclosureDate)`
 - `global/event` 패키지에 이벤트 배치 → 도메인 간 공유
+- 팬아웃 구조: 하나의 이벤트를 여러 리스너가 동시 수신
 
 ### 흐름
 ```
 DisclosureCollectionService.collect()
-  → 새 공시 save + NewDisclosureEvent 발행
+  → Collector: DART API 조회 → 비상장사 제외 → 중복 필터링
+  → Processor: 분류 → 저장 → NewDisclosureEvent 발행
   → 트랜잭션 커밋
-  → AnalysisEventListener.handle()
+  → (팬아웃) AnalysisEventListener.handle() [@Async]
     → DartClient.fetchDocumentContent() → 본문 텍스트 추출
     → AnalysisService.analyze() → LLM 호출 + AnalysisReport 저장
+  → (팬아웃) MarketEventListener.handle() [@Async]
+    → 전일 종가 + 당일 종가 조회 → MarketReaction 저장
 ```
 
+### 구조 변경 이력
+- **초기**: 직렬 구조 (NewDisclosureEvent → Analysis → AnalysisCompletedEvent → Market)
+- **현재**: 팬아웃 구조 (NewDisclosureEvent → Analysis, Market 동시 수신)
+- 변경 이유: Analysis와 Market은 독립적인 관심사 → 직렬 의존 불필요
+
 ### 특성
-- 동기 실행: 분석 완료까지 스케줄러 대기 → `fixedDelay`와 자연스럽게 결합
+- 비동기 실행: `@Async`로 리스너가 별도 스레드에서 실행
+- 분석/시장 반응 추적이 서로 독립적으로 동작 (하나 실패해도 다른 쪽 영향 없음)
 - 분석 실패 시 공시 저장에 영향 없음 (이미 커밋 완료)
-- 향후 비동기 전환: `@Async` 추가 또는 메시지 큐 도입 가능

@@ -4,8 +4,8 @@
 "무엇이 발표되었는가?"
 
 ## 책임
-- DART에서 공시 목록 수집
-- 관심 종목 기준 필터링
+- DART에서 공시 목록 수집 (상장사만 — 비상장사 필터링)
+- 중복 공시 필터링
 - 원문 데이터 정제
 - 공시 본문 텍스트 추출 (ZIP → XML → 텍스트)
 - 공시 분류 (카테고리/분석 대상 여부 판단)
@@ -64,9 +64,12 @@
 ### 분류 흐름
 ```
 DisclosureCollectionService.collect()
-  → classifier.classify(title) → DisclosureCategory
-  → disclosure.applyCategory(category) → status 결정
-  → PENDING_ANALYSIS이면 NewDisclosureEvent 발행
+  → DisclosureCollector.fetchNew()
+    → DART API 조회 → 비상장사 필터링 → 중복 필터링
+  → DisclosureProcessor.processAll()
+    → classifier.classify(title) → DisclosureCategory
+    → disclosure.applyCategory(category) → status 결정
+    → PENDING_ANALYSIS이면 NewDisclosureEvent 발행
 ```
 
 ## 패키지 구조
@@ -77,7 +80,7 @@ disclosure/
 │   ├── service/        DisclosureClassifier (포트), TitleBasedDisclosureClassifier
 │   └── repository/     DisclosureRepository (포트), DartClient (포트)
 ├── application/
-│   ├── service/        DisclosureService, DisclosureCollectionService
+│   ├── service/        DisclosureCollectionService, DisclosureCollector, DisclosureProcessor, DisclosureService
 │   └── dto/            DisclosureInfo
 ├── infrastructure/
 │   ├── persistence/    JpaDisclosureRepository, DisclosureRepositoryImpl
@@ -93,7 +96,7 @@ disclosure/
 
 ## 아웃바운드
 - `DartApiClient` — DART Open API 연동
-  - `fetchRecentDisclosures()` — 공시 목록 조회 (`/list.json`)
+  - `fetchRecentDisclosures()` — 공시 목록 조회 (`/list.json`), 비상장사(`stockCode` 빈 값) 자동 제외
   - `fetchDocumentContent(receiptNumber)` — 본문 조회 (`/document.xml` → ZIP 해제 → XML 태그 제거 → 텍스트 추출, 최대 10,000자)
 - `JpaDisclosureRepository` — 공시 데이터 영속화
 - `ApplicationEventPublisher` — `NewDisclosureEvent` 발행 (트랜잭션 내)
@@ -102,11 +105,9 @@ disclosure/
 ```
 DartPollingScheduler (@Scheduled fixedDelay=60s)
   → DisclosureCollectionService.collect()
-    → DART API에서 최근 공시 조회
-    → 중복 필터링 → 새 공시 저장
-    → DisclosureClassifier로 분류
-    → 분석 대상(PENDING_ANALYSIS)만 NewDisclosureEvent 발행
-  → 트랜잭션 커밋 후 → AnalysisEventListener가 이벤트 수신
+    → Collector: DART API 조회 → 비상장사 제외 → 중복 필터링
+    → Processor: 분류 → 저장 → 분석 대상만 NewDisclosureEvent 발행
+  → 트랜잭션 커밋 후 → AnalysisEventListener, MarketEventListener가 이벤트 동시 수신 (팬아웃)
 ```
 
 ## API

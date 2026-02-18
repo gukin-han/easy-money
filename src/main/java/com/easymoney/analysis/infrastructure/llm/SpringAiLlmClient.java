@@ -3,11 +3,13 @@ package com.easymoney.analysis.infrastructure.llm;
 import com.easymoney.analysis.domain.model.AnalysisResult;
 import com.easymoney.analysis.domain.repository.LlmClient;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @Primary
 @ConditionalOnProperty(name = "spring.ai.openai.api-key")
@@ -32,9 +34,15 @@ public class SpringAiLlmClient implements LlmClient {
                 - summary: 한국어로 2-3문장 요약
                 """.formatted(corporateName, title, content);
 
-        return chatClient.prompt()
+        log.info("LLM 프롬프트:\n{}", prompt);
+
+        AnalysisResult result = chatClient.prompt()
                 .user(prompt)
                 .call()
                 .entity(AnalysisResult.class);
+
+        log.info("LLM 응답: {}", result);
+
+        return result;
     }
 }
