@@ -15,7 +15,8 @@ public record DisclosureInfo(
         LocalDateTime disclosedAt,
         String documentUrl,
         DisclosureStatus status,
-        DisclosureCategory category
+        DisclosureCategory category,
+        LocalDateTime createdAt
 ) {
 
     public static DisclosureInfo from(Disclosure disclosure) {
@@ -28,7 +29,8 @@ public record DisclosureInfo(
                 disclosure.getDisclosedAt(),
                 disclosure.getDocumentUrl(),
                 disclosure.getStatus(),
-                disclosure.getCategory()
+                disclosure.getCategory(),
+                disclosure.getCreatedAt()
         );
     }
 }

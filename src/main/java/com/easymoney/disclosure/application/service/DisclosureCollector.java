@@ -6,6 +6,7 @@ import com.easymoney.disclosure.domain.repository.DisclosureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +18,13 @@ public class DisclosureCollector {
     private final DisclosureRepository disclosureRepository;
 
     public List<Disclosure> fetchNew() {
-        List<Disclosure> fetched = dartClient.fetchRecentDisclosures();
+        return fetchNewByDate(null);
+    }
+
+    public List<Disclosure> fetchNewByDate(LocalDate date) {
+        List<Disclosure> fetched = date != null
+                ? dartClient.fetchDisclosuresByDate(date)
+                : dartClient.fetchRecentDisclosures();
         List<String> receiptNumbers = fetched.stream()
                 .map(Disclosure::getReceiptNumber).toList();
         Set<String> existing = disclosureRepository

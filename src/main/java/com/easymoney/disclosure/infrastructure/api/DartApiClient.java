@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
@@ -35,19 +36,39 @@ public class DartApiClient implements DartClient {
 
     @Override
     public List<Disclosure> fetchRecentDisclosures() {
-        DartDisclosureListResponse response = dartRestClient.get()
-                .uri("/list.json?crtfc_key={key}&page_count=100", apiKey)
-                .retrieve()
-                .body(DartDisclosureListResponse.class);
+        return fetchDisclosuresByDate(LocalDate.now());
+    }
 
-        if (response == null || response.list() == null) {
+    @Override
+    public List<Disclosure> fetchDisclosuresByDate(LocalDate date) {
+        String dateStr = date.format(DateTimeFormatter.BASIC_ISO_DATE);
+        List<DartDisclosureItem> allItems = new ArrayList<>();
+        int pageNo = 1;
+
+        while (true) {
+            DartDisclosureListResponse response = dartRestClient.get()
+                    .uri("/list.json?crtfc_key={key}&bgn_de={date}&end_de={date}&page_count=100&page_no={page}",
+                            apiKey, dateStr, dateStr, pageNo)
+                    .retrieve()
+                    .body(DartDisclosureListResponse.class);
+
+            if (response == null || response.list() == null) {
+                validateStatus(response);
+                break;
+            }
+
             validateStatus(response);
-            return List.of();
+            allItems.addAll(response.list());
+
+            if (response.totalPage() == null || pageNo >= response.totalPage()) {
+                break;
+            }
+            pageNo++;
         }
 
-        validateStatus(response);
+        log.info("DART {}일자 전체 공시 {}건 조회 완료 ({}페이지)", dateStr, allItems.size(), pageNo);
 
-        return response.list().stream()
+        return allItems.stream()
                 .filter(item -> item.stockCode() != null && !item.stockCode().isBlank())
                 .map(this::toDisclosure)
                 .toList();
