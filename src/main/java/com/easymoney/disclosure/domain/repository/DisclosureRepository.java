@@ -12,6 +12,8 @@ public interface DisclosureRepository {
 
     Disclosure save(Disclosure disclosure);
 
+    List<Disclosure> saveAll(List<Disclosure> disclosures);
+
     Optional<Disclosure> findByReceiptNumber(String receiptNumber);
 
     List<Disclosure> findAll();

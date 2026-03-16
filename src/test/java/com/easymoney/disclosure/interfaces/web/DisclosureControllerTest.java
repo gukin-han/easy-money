@@ -49,7 +49,8 @@ class DisclosureControllerTest {
                 new DisclosureInfo(1L, "001", "테스트회사", "005930", "사업보고서",
                         LocalDateTime.of(2024, 5, 15, 0, 0),
                         "https://dart.fss.or.kr/dsaf001/main.do?rcpNo=001",
-                        DisclosureStatus.PENDING_ANALYSIS, DisclosureCategory.REGULAR_REPORT)
+                        DisclosureStatus.PENDING_ANALYSIS, DisclosureCategory.REGULAR_REPORT,
+                        LocalDateTime.of(2024, 5, 15, 0, 0))
         );
         given(disclosureService.findAll()).willReturn(infos);
 

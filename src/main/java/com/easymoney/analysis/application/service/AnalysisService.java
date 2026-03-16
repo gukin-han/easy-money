@@ -5,6 +5,8 @@ import com.easymoney.analysis.domain.model.AnalysisReport;
 import com.easymoney.analysis.domain.model.AnalysisResult;
 import com.easymoney.analysis.domain.repository.AnalysisReportRepository;
 import com.easymoney.analysis.domain.repository.LlmClient;
+import com.easymoney.disclosure.domain.model.DisclosureStatus;
+import com.easymoney.disclosure.domain.repository.DisclosureRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,13 +20,18 @@ public class AnalysisService {
 
     private final LlmClient llmClient;
     private final AnalysisReportRepository analysisReportRepository;
+    private final DisclosureRepository disclosureRepository;
 
-    @Transactional
-    public void analyze(Long disclosureId, String receiptNumber,
-                        String corporateName, String title, String content) {
+    public AnalysisReport analyze(
+        Long disclosureId,
+        String receiptNumber,
+        String corporateName,
+        String title,
+        String content
+    ) {
         AnalysisResult result = llmClient.analyze(corporateName, title, content);
 
-        AnalysisReport report = AnalysisReport.builder()
+        return AnalysisReport.builder()
                 .disclosureId(disclosureId)
                 .receiptNumber(receiptNumber)
                 .corporateName(corporateName)
@@ -34,8 +41,12 @@ public class AnalysisService {
                 .summary(result.summary())
                 .analyzedAt(LocalDateTime.now())
                 .build();
+    }
 
+    @Transactional
+    public void completeAnalysis(AnalysisReport report) {
         analysisReportRepository.save(report);
+        disclosureRepository.updateStatus(report.getDisclosureId(), DisclosureStatus.ANALYZED);
     }
 
     @Transactional(readOnly = true)

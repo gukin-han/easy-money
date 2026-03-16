@@ -22,7 +22,12 @@ public class DisclosureRepositoryImpl implements DisclosureRepository {
         return jpaDisclosureRepository.save(disclosure);
     }
 
-    @Override
+  @Override
+  public List<Disclosure> saveAll(List<Disclosure> disclosures) {
+    return jpaDisclosureRepository.saveAll(disclosures);
+  }
+
+  @Override
     public Optional<Disclosure> findByReceiptNumber(String receiptNumber) {
         return jpaDisclosureRepository.findByReceiptNumber(receiptNumber);
     }

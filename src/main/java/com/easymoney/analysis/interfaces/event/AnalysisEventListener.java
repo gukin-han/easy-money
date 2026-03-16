@@ -1,6 +1,7 @@
 package com.easymoney.analysis.interfaces.event;
 
 import com.easymoney.analysis.application.service.AnalysisService;
+import com.easymoney.analysis.application.service.DisclosureAnalysisFacade;
 import com.easymoney.disclosure.domain.model.DisclosureStatus;
 import com.easymoney.disclosure.domain.repository.DartClient;
 import com.easymoney.disclosure.domain.repository.DisclosureRepository;
@@ -17,30 +18,16 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @RequiredArgsConstructor
 public class AnalysisEventListener {
 
-    private final DartClient dartClient;
-    private final AnalysisService analysisService;
-    private final DisclosureRepository disclosureRepository;
+    private final DisclosureAnalysisFacade analysisFacade;
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handle(NewDisclosureEvent event) {
-        log.info("새 공시 분석 시작: {} - {}", event.corporateName(), event.title());
-
-        try {
-            String content = dartClient.fetchDocumentContent(event.receiptNumber());
-            analysisService.analyze(
-                    event.disclosureId(),
-                    event.receiptNumber(),
-                    event.corporateName(),
-                    event.title(),
-                    content
-            );
-
-            disclosureRepository.updateStatus(event.disclosureId(), DisclosureStatus.ANALYZED);
-            log.info("공시 분석 완료: {} - {}", event.corporateName(), event.title());
-        } catch (Exception e) {
-            log.error("공시 분석 실패: disclosureId={}, {} - {}",
-                    event.disclosureId(), event.corporateName(), event.title(), e);
-        }
+        analysisFacade.execute(
+            event.disclosureId(),
+            event.receiptNumber(),
+            event.corporateName(),
+            event.title()
+        );
     }
 }
