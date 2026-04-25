@@ -1,1 +1,1 @@
-rootProject.name = "easymoney"
+rootProject.name = "e-invest-lab"

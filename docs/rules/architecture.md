@@ -2,7 +2,7 @@
 
 ## 패키지 구조
 ```
-com.easymoney
+dev.gukin.einvestlab
 ├── global                          // 전역 공통 (config, error)
 ├── disclosure                      // 공시 수집
 ├── analysis                        // LLM 분석

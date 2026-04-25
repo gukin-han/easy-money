@@ -4,9 +4,9 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 }
 
-group = "com.easymoney"
+group = "dev.gukin.einvestlab"
 version = "0.0.1-SNAPSHOT"
-description = "easymoney"
+description = "e-invest-lab"
 
 java {
     toolchain {

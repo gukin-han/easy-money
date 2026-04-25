@@ -3,7 +3,7 @@ services:
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: easymoney
+      MYSQL_DATABASE: einvestlab
     ports:
       - "3306:3306"
     volumes:
@@ -24,7 +24,7 @@ services:
       DART_API_KEY: ${DART_API_KEY}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       spring.ai.openai.api-key: ${OPENAI_API_KEY}
-      spring.datasource.url: jdbc:mysql://db:3306/easymoney?useSSL=false&allowPublicKeyRetrieval=true
+      spring.datasource.url: jdbc:mysql://db:3306/einvestlab?useSSL=false&allowPublicKeyRetrieval=true
     depends_on:
       db:
         condition: service_healthy

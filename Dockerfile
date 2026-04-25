@@ -19,5 +19,5 @@ RUN ./gradlew bootJar -x test --no-daemon -Dorg.gradle.jvmargs="-Xmx1g"
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 RUN sed -i 's/jdk.tls.disabledAlgorithms=.*/jdk.tls.disabledAlgorithms=/' $JAVA_HOME/conf/security/java.security
-COPY --from=backend /app/build/libs/easymoney-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=backend /app/build/libs/e-invest-lab-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

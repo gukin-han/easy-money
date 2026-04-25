@@ -10,12 +10,12 @@ Spring Data JPA + MySQL + Spring Web MVC + Lombok
 ./gradlew bootRun        # 실행 (port 8080)
 ./gradlew test           # 테스트만
 ./gradlew clean build    # 클린 빌드
-./gradlew test --tests "com.easymoney.SomeTest"  # 단일 테스트
+./gradlew test --tests "dev.gukin.einvestlab.SomeTest"  # 단일 테스트
 ```
 
 ## Architecture
-- 패키지 루트: `com.easymoney`
-- 진입점: `EasymoneyApplication.java`
+- 패키지 루트: `dev.gukin.einvestlab`
+- 진입점: `EInvestLabApplication.java`
 - 설정: `src/main/resources/application.properties`
 - DB: MySQL 8.0 (Docker), 테스트: Testcontainers MySQL
 - 테스트: JUnit 5 + `@SpringBootTest`
